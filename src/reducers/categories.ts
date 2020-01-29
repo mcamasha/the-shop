@@ -1,7 +1,6 @@
-import R from "ramda";
-
 import { FETCH_CATEGORIES_SUCCESS } from "actionTypes";
 import { ICategoriesStore, ICategory } from "Models";
+import { merge } from "ramda";
 
 const categoriesInitialState: ICategoriesStore = {};
 
@@ -18,7 +17,7 @@ export default (
 ) => {
   switch (action.type) {
     case FETCH_CATEGORIES_SUCCESS:
-      return R.merge(state, action.payload);
+      return merge(state, action.payload);
     default:
       return state;
   }

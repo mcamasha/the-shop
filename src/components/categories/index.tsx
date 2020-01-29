@@ -1,13 +1,13 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
-import R from "ramda";
 import classNames from "classnames";
 
 import { getCategories, getActiveCategoryId } from "selectors";
 import { IReduxStore, ICategory } from "Models";
+import { propEq, isNil } from "ramda";
 
 interface IStateProps {
   categories: ICategory[];
@@ -22,9 +22,14 @@ export interface ICategoriesOwnProps {
 
 type TProps = IStateProps & ICategoriesOwnProps;
 
-const Categories: React.SFC<TProps> = ({ categories, activeCategoryId }) => {
+const Categories: React.SFC<TProps> = () => {
+  const categories = useSelector((state: IReduxStore) => getCategories(state));
+  const activeCategoryId = useSelector((state: IReduxStore) =>
+    getActiveCategoryId(ownProps)
+  );
+
   const renderCategory = (category: ICategory, index: number) => {
-    const getActiveState = R.propEq("id", activeCategoryId);
+    const getActiveState = propEq("id", activeCategoryId);
 
     const linkClass = classNames({
       "list-group-item": true,
@@ -41,7 +46,7 @@ const Categories: React.SFC<TProps> = ({ categories, activeCategoryId }) => {
   const renderAllCategory = () => {
     const linkClass = classNames({
       "list-group-item": true,
-      active: R.isNil(activeCategoryId)
+      active: isNil(activeCategoryId)
     });
 
     return (
@@ -62,12 +67,4 @@ const Categories: React.SFC<TProps> = ({ categories, activeCategoryId }) => {
   );
 };
 
-const mapStateToProps = (
-  state: IReduxStore,
-  ownProps: ICategoriesOwnProps
-) => ({
-  categories: getCategories(state),
-  activeCategoryId: getActiveCategoryId(ownProps)
-});
-
-export default compose(withRouter, connect(mapStateToProps, null))(Categories);
+export default compose(withRouter)(Categories);

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import R from "ramda";
 import { Link } from "react-router-dom";
 
 import {
@@ -11,6 +10,7 @@ import {
 } from "actions";
 import { getPhones } from "selectors";
 import { IReduxStore, IPhone } from "Models";
+import { take } from "ramda";
 
 interface IProps {
   params: {
@@ -31,7 +31,7 @@ const Phones = (props: IProps) => {
   }, []);
 
   const renderPhone = (phone: IPhone, index: number) => {
-    const shortDescription = `${R.take(60, phone.description)}...`;
+    const shortDescription = `${take(60, phone.description)}...`;
 
     return (
       <div className="col-sm-4 col-lg-4 col-md-4 book-list" key={index}>

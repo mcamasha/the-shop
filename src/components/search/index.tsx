@@ -1,55 +1,36 @@
-import React, {Component} from 'react'
+import React, { useState } from "react";
 
-import {connect} from 'react-redux'
-import {searchPhone} from 'actions'
+import { useDispatch } from "react-redux";
+import { searchPhone } from "actions";
 
-class Search extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      value: ''
-    }
+const Search = () => {
+  const [value, setValue] = useState<string>("");
+  const dispatch = useDispatch();
 
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
 
-  handleChange (event) {
-    this.setState({
-      value: event.target.value
-    })
-  }
-
-  handleSubmit(event) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    this.props.searchPhone(this.state.value)
-  }
+    dispatch(searchPhone(value));
+  };
 
-  render () {
-    return (
-      <div className='well blosd'>
-        <h3 className='lead'>Quick shop</h3>
-        <div className='input-group'>
-          <form onSubmit={this.handleSubmit}>
-            <input
-              onChange={this.handleChange}
-              type='text'
-              className='form-control'
-            />
-          </form>
-          <span className='input-group-btn'>
-          <button className='btn btn-default'>
-            <span className='glyphicon glyphicon-search'/>
+  return (
+    <div className="well blosd">
+      <h3 className="lead">Quick shop</h3>
+      <div className="input-group">
+        <form onSubmit={handleSubmit}>
+          <input onChange={handleChange} type="text" className="form-control" />
+        </form>
+        <span className="input-group-btn">
+          <button className="btn btn-default">
+            <span className="glyphicon glyphicon-search" />
           </button>
         </span>
-        </div>
       </div>
-    )
-  }
-}
+    </div>
+  );
+};
 
-const mapDispatchToProps = {
-  searchPhone
-}
-
-export default connect(null, mapDispatchToProps)(Search)
+export default Search;

@@ -1,5 +1,4 @@
 import React from "react";
-import R from "ramda";
 import { Link } from "react-router-dom";
 
 import { getTotalBasketPrice, getBasketPhonesWithCount } from "selectors";
@@ -7,6 +6,7 @@ import { getTotalBasketPrice, getBasketPhonesWithCount } from "selectors";
 import { removePhoneFromBasket, basketCheckout, cleanBasket } from "actions";
 import { useSelector } from "react-redux";
 import { IReduxStore } from "Models";
+import { isEmpty, not } from "ramda";
 
 const Basket = () => {
   const phones = useSelector((state: IReduxStore) =>
@@ -16,7 +16,7 @@ const Basket = () => {
     getTotalBasketPrice(state)
   );
 
-  const isBasketEmpty = R.isEmpty(phones);
+  const isBasketEmpty = isEmpty(phones);
 
   const renderContent = () => {
     return (
@@ -49,7 +49,7 @@ const Basket = () => {
             </tbody>
           </table>
         </div>
-        {R.not(isBasketEmpty) && (
+        {not(isBasketEmpty) && (
           <div className="row">
             <div className="pull-right total-user-checkout">
               <b>Total:</b>${totalPrice}
@@ -66,7 +66,7 @@ const Basket = () => {
         <span className="glyphicon glyphicon-info-sign" />
         <span>Continue shopping!</span>
       </Link>
-      {R.not(isBasketEmpty) && (
+      {not(isBasketEmpty) && (
         <div>
           <button onClick={cleanBasket} className="btn btn-danger">
             <span className="glyphicon glyphicon-trash" />

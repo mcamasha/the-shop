@@ -1,10 +1,9 @@
-import R from "ramda";
-
 import {
   ADD_PHONE_TO_BASKET,
   REMOVE_PHONE_FROM_BASKET,
   CLEAN_BASKET
 } from "actionTypes";
+import { append, without, of } from "ramda";
 
 const basketInitialState: string[] = [];
 
@@ -30,9 +29,9 @@ type TBasketActionType =
 export default (state = basketInitialState, action: TBasketActionType) => {
   switch (action.type) {
     case ADD_PHONE_TO_BASKET:
-      return R.append(action.payload, state);
+      return append(action.payload, state);
     case REMOVE_PHONE_FROM_BASKET:
-      return R.without(R.of(action.payload), state);
+      return without(of(action.payload), state);
     case CLEAN_BASKET:
       return [];
     default:

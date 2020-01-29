@@ -1,4 +1,4 @@
-import R from "ramda";
+import R, { find, propEq } from "ramda";
 import axios from "axios";
 
 import phones from "api/mockPhones";
@@ -19,7 +19,7 @@ export const loadMorePhones = async () => {
 
 export const fetchPhoneById = async (id: string) => {
   return new Promise((resolve, reject) => {
-    const phone = R.find(R.propEq("id", id), phones);
+    const phone = find(propEq("id", id), phones);
     resolve(phone);
   });
 };

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import R from "ramda";
+import { compose, toPairs, pick } from "ramda";
 import { Link } from "react-router-dom";
 
 import { getPhoneById } from "selectors";
@@ -25,17 +25,9 @@ const Phone = (props: IProps) => {
   }, []);
 
   const renderFields = () => {
-    const columnFields = R.compose(
-      R.toPairs,
-      R.pick([
-        "cpu",
-        "camera",
-        "size",
-        "weight",
-        "display",
-        "battery",
-        "memory"
-      ])
+    const columnFields = compose(
+      toPairs,
+      pick(["cpu", "camera", "size", "weight", "display", "battery", "memory"])
     )(phone);
 
     return columnFields.map(([key, value]) => (
