@@ -1,13 +1,8 @@
 import { IReduxStore, IPhone, ICategory } from "Models";
 import {
-  find,
-  path,
   equals,
-  contains,
   compose,
   filter,
-  when,
-  always,
   map,
   length,
   pluck,
@@ -18,7 +13,6 @@ import {
   prop,
   pickBy,
   pathOr,
-  isEmpty,
   includes
 } from "ramda";
 import { RouteComponentProps } from "react-router";
@@ -38,16 +32,20 @@ export const getPhones = (
     includes(state.phonesPage.search, prop("name", phone));
   const isSearchCategory = (phone: IPhone): boolean =>
     equals(activeCategoryId, prop("categoryId", phone));
-  const getListPhonesByIds = (id: string) => getPhoneById(state, id);
+  const listPhones: IPhone[] = map(
+    (id: string) => getPhoneById(state, id),
+    state.phonesPage.ids
+  );
+  const filteredByCategoryListPhones: IPhone[] = filter(
+    isSearchCategory,
+    listPhones
+  );
+  const filteredBySearchQueryListPhones: IPhone[] = filter(
+    isSearchPhone,
+    filteredByCategoryListPhones
+  );
 
-  const phones: IPhone[] = compose(
-    filter(isSearchPhone),
-    // when(isEmpty(activeCategoryId), filter(applyCategory)),
-    // filter(isSearchCategory),
-    map(getListPhonesByIds)
-  )(state.phonesPage.ids);
-
-  return phones;
+  return filteredBySearchQueryListPhones;
 };
 
 export const getRenderedPhonesLength = (state: IReduxStore) =>
@@ -69,11 +67,8 @@ export const getCategories = (state: IReduxStore): ICategory[] =>
   values(state.categories);
 
 export const getBasketPhonesWithCount = (state: IReduxStore) => {
-  const phoneCount = (id: string): number =>
-    compose(
-      length,
-      filter((phoneId: string) => id === phoneId)
-    )(state.basket);
+  const phoneCount = (id: string) =>
+    state.basket.filter((phoneId: string) => id === phoneId).length;
   const phoneWithCount = (phone: IPhone): IPhone & { count: number } =>
     assoc("count", phoneCount(phone.id), phone);
 
