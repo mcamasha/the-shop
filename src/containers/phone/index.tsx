@@ -25,7 +25,7 @@ const Phone = (props: IProps) => {
   }, []);
 
   const renderFields = () => {
-    const columnFields = compose(
+    const columnFields: Array<[string, string]> = compose(
       toPairs,
       pick(["cpu", "camera", "size", "weight", "display", "battery", "memory"])
     )(phone);

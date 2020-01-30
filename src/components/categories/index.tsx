@@ -1,6 +1,6 @@
 import React from "react";
-import { connect, useSelector } from "react-redux";
-import { withRouter } from "react-router";
+import { useSelector } from "react-redux";
+import { withRouter, RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import classNames from "classnames";
@@ -9,23 +9,12 @@ import { getCategories, getActiveCategoryId } from "selectors";
 import { IReduxStore, ICategory } from "Models";
 import { propEq, isNil } from "ramda";
 
-interface IStateProps {
-  categories: ICategory[];
-  activeCategoryId: string;
-}
+type TProps = RouteComponentProps;
 
-export interface ICategoriesOwnProps {
-  params: {
-    id: string;
-  };
-}
-
-type TProps = IStateProps & ICategoriesOwnProps;
-
-const Categories: React.SFC<TProps> = () => {
+const Categories = (props: TProps) => {
   const categories = useSelector((state: IReduxStore) => getCategories(state));
   const activeCategoryId = useSelector((state: IReduxStore) =>
-    getActiveCategoryId(ownProps)
+    getActiveCategoryId(props)
   );
 
   const renderCategory = (category: ICategory, index: number) => {

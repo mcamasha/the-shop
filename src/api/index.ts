@@ -1,4 +1,4 @@
-import R, { find, propEq } from "ramda";
+import { find, propEq } from "ramda";
 import axios from "axios";
 
 import phones from "api/mockPhones";

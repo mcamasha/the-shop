@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 
 import {
   fetchPhones,
@@ -12,13 +12,9 @@ import { getPhones } from "selectors";
 import { IReduxStore, IPhone } from "Models";
 import { take } from "ramda";
 
-interface IProps {
-  params: {
-    id: string;
-  };
-}
+type TProps = RouteComponentProps;
 
-const Phones = (props: IProps) => {
+const Phones = (props: TProps) => {
   const phones: IPhone[] = useSelector((state: IReduxStore) =>
     getPhones(state, props)
   );

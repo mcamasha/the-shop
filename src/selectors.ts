@@ -1,5 +1,4 @@
 import { IReduxStore, IPhone, ICategory } from "Models";
-import { ICategoriesOwnProps } from "components/categories";
 import {
   find,
   path,
@@ -15,26 +14,37 @@ import {
   sum,
   values,
   assoc,
-  uniq
+  uniq,
+  prop,
+  pickBy,
+  pathOr,
+  isEmpty,
+  includes
 } from "ramda";
+import { RouteComponentProps } from "react-router";
 
-export const getPhoneById = (state: IReduxStore, id: string) =>
-  find((phone: IPhone) => equals(id, phone.id), state.phones);
+export const getPhoneById = (state: IReduxStore, id: string): IPhone =>
+  pickBy((phone: IPhone) => phone.id === id, state.phones);
 
-export const getActiveCategoryId = (ownProps: ICategoriesOwnProps) =>
-  path<string>(["params", "id"], ownProps);
+export const getActiveCategoryId = (ownProps: RouteComponentProps) =>
+  pathOr("", ["params", "id"], ownProps);
 
-export const getPhones = (state: IReduxStore, ownProps): IPhone[] => {
+export const getPhones = (
+  state: IReduxStore,
+  ownProps: RouteComponentProps
+): IPhone[] => {
   const activeCategoryId = getActiveCategoryId(ownProps);
-  const applySearch = (phone: IPhone) =>
-    contains(state.phonesPage.search, prop("name", phone));
-  const applyCategory = (phone: IPhone) =>
+  const isSearchPhone = (phone: IPhone) =>
+    includes(state.phonesPage.search, prop("name", phone));
+  const isSearchCategory = (phone: IPhone): boolean =>
     equals(activeCategoryId, prop("categoryId", phone));
+  const getListPhonesByIds = (id: string) => getPhoneById(state, id);
 
-  const phones = compose(
-    filter(applySearch),
-    when(always(activeCategoryId), filter(applyCategory)),
-    map((id: string) => getPhoneById(state, id))
+  const phones: IPhone[] = compose(
+    filter(isSearchPhone),
+    // when(isEmpty(activeCategoryId), filter(applyCategory)),
+    // filter(isSearchCategory),
+    map(getListPhonesByIds)
   )(state.phonesPage.ids);
 
   return phones;
@@ -62,7 +72,7 @@ export const getBasketPhonesWithCount = (state: IReduxStore) => {
   const phoneCount = (id: string): number =>
     compose(
       length,
-      filter((basketId: string) => equals(id, basketId))
+      filter((phoneId: string) => id === phoneId)
     )(state.basket);
   const phoneWithCount = (phone: IPhone): IPhone & { count: number } =>
     assoc("count", phoneCount(phone.id), phone);

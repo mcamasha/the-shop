@@ -24,7 +24,7 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(thunk, middleware))
 );
 
-const App: React.FC = () => {
+const App: React.SFC<{}> = () => {
   return (
     <Provider store={store}>
       <Router history={history}>
